@@ -2,7 +2,7 @@
 
 A simple web app where students can submit and track complaints, and admins can manage and resolve them.
 
-Built with **Python Flask**, **SQLite**, and **Bootstrap** as a Software Engineering lab project.
+Built with **Python Flask**, **MySQL**, and **Bootstrap** as a Software Engineering lab project.
 
 ---
 
@@ -42,7 +42,7 @@ Password: admin123
 |----------|-------------------|
 | Frontend | HTML, Bootstrap 5 |
 | Backend  | Python Flask      |
-| Database | SQLite            |
+| Database | MySQL             |
 
 ---
 
