@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block page_title %}All Complaints{% endblock %}
+{% block page_subtitle %}Manage and assign complaints{% endblock %}
+
+{% block content %}
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-dot dot-blue">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2zm2 2h14v12H5V7z"/>
+            </svg>
+        </div>
+        <div class="stat-label">Total Complaints</div>
+        <div class="stat-value">{{ stats.total }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-dot dot-amber">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+            </svg>
+        </div>
+        <div class="stat-label">Pending</div>
+        <div class="stat-value">{{ stats.pending }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-dot dot-blue">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+        </div>
+        <div class="stat-label">In Progress</div>
+        <div class="stat-value">{{ stats.inprogress }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-dot dot-green">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+        </div>
+        <div class="stat-label">Resolved</div>
+        <div class="stat-value">{{ stats.resolved }}</div>
+    </div>
+</div>
+
+<!-- Complaints List -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">All Complaints</div>
+    </div>
+    
+    {% if complaints %}
+    <div class="complaint-list">
+        {% for complaint in complaints %}
+        <div class="complaint-item" style="padding: 0;">
+            <div style="flex: 1; padding: 1rem 1.25rem;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                    <div class="complaint-icon {% if complaint[4] == 'academic' %}icon-academic{% elif complaint[4] == 'hostel' %}icon-hostel{% elif complaint[4] == 'admin' %}icon-admin{% elif complaint[4] == 'infrastructure' %}icon-infra{% else %}icon-other{% endif %}" style="margin: 0;">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2z"/>
+                        </svg>
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="complaint-title">{{ complaint[2] }}</div>
+                        <div class="complaint-meta">From: <strong>{{ complaint[9] }}</strong> | {{ complaint[7].strftime('%d %b %Y') if complaint[7] else 'N/A' }}</div>
+                    </div>
+                    <span class="badge {% if complaint[5] == 'pending' %}badge-pending{% elif complaint[5] == 'in_progress' %}badge-inprogress{% elif complaint[5] == 'resolved' %}badge-resolved{% else %}badge-rejected{% endif %}">
+                        {{ complaint[5].replace('_', ' ').title() }}
+                    </span>
+                </div>
+                
+                <div class="complaint-preview" style="margin-top: 0;">{{ complaint[3][:100] }}...</div>
+                
+                <div style="margin-top: 1rem; display: flex; gap: 8px; align-items: center;">
+                    {% if complaint[5] == 'pending' %}
+                    <form method="POST" action="/assign/{{ complaint[0] }}" style="display: flex; gap: 8px; align-items: center; margin: 0;">
+                        <select name="department" style="width: auto; padding: 7px 10px; font-size: 12px;" required>
+                            <option value="">Assign to:</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept }}">{{ dept }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-sm" style="margin: 0;">Assign</button>
+                    </form>
+                    {% else %}
+                    <span style="font-size: 12px; color: var(--text2);">Assigned to: <strong>{{ complaint[6] or 'Unassigned' }}</strong></span>
+                    {% endif %}
+                    
+                    {% if complaint[5] != 'resolved' and complaint[5] != 'rejected' %}
+                    <a href="/update/{{ complaint[0] }}/resolved" class="btn btn-sm" style="color: var(--green);">Resolve</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card-body">
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+            </svg>
+            <div class="empty-state-title">No complaints</div>
+            <div class="empty-state-sub">All complaints have been resolved</div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function viewComplaint(id) {
+        const modal = document.getElementById('complaintModal');
+        const modalBody = document.getElementById('modalBody');
+        
+        fetch(`/complaint/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                const complaint = data.complaint;
+                const replies = data.replies;
+                
+                modalBody.innerHTML = `
+                    <div class="detail-row">
+                        <div class="detail-label">From</div>
+                        <div class="detail-value">${complaint.user_name}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">${complaint.status.toUpperCase()}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Category</div>
+                        <div class="detail-value">${complaint.category.toUpperCase()}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Filed</div>
+                        <div class="detail-value">${new Date(complaint.created_at).toLocaleDateString()}</div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <div style="font-size: 13px; font-weight: 600; margin-bottom: 8px;">Description</div>
+                        <div class="desc-box">${complaint.description}</div>
+                    </div>
+                    
+                    ${replies.length > 0 ? `
+                        <div class="reply-section">
+                            <div class="reply-label">Updates</div>
+                            ${replies.map(r => `
+                                <div class="reply-entry">
+                                    <div class="reply-from">${r.user}</div>
+                                    <div>${r.reply}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                `;
+            });
+    }
+</script>
+
+{% endblock %}

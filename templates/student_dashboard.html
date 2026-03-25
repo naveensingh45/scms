@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block page_title %}My Complaints{% endblock %}
+{% block page_subtitle %}Track and manage your complaints{% endblock %}
+
+{% block content %}
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-dot dot-blue">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2zm2 2h14v12H5V7z"/>
+            </svg>
+        </div>
+        <div class="stat-label">Total Complaints</div>
+        <div class="stat-value">{{ stats.total }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-dot dot-amber">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+            </svg>
+        </div>
+        <div class="stat-label">Pending</div>
+        <div class="stat-value">{{ stats.pending }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-dot dot-blue">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+        </div>
+        <div class="stat-label">In Progress</div>
+        <div class="stat-value">{{ stats.inprogress }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-dot dot-green">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+        </div>
+        <div class="stat-label">Resolved</div>
+        <div class="stat-value">{{ stats.resolved }}</div>
+    </div>
+</div>
+
+<!-- Submit New Complaint Card -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">Submit New Complaint</div>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="/add">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="title">Complaint Title</label>
+                    <input type="text" id="title" name="title" placeholder="Brief title of your complaint" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select a category</option>
+                        <option value="academic">Academic Issues</option>
+                        <option value="hostel">Hostel Issues</option>
+                        <option value="admin">Administrative</option>
+                        <option value="infrastructure">Infrastructure</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group full-width">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" placeholder="Provide detailed description of your complaint..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: auto; padding: 10px 24px;">Submit Complaint</button>
+        </form>
+    </div>
+</div>
+
+<!-- Complaints List -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">My Complaints</div>
+    </div>
+    
+    {% if complaints %}
+    <div class="complaint-list">
+        {% for complaint in complaints %}
+        <div class="complaint-item" onclick="viewComplaint({{ complaint[0] }})">
+            <div class="complaint-icon {% if complaint[4] == 'academic' %}icon-academic{% elif complaint[4] == 'hostel' %}icon-hostel{% elif complaint[4] == 'admin' %}icon-admin{% elif complaint[4] == 'infrastructure' %}icon-infra{% else %}icon-other{% endif %}">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2z"/>
+                </svg>
+            </div>
+            <div class="complaint-body">
+                <div class="complaint-title">{{ complaint[2] }}</div>
+                <div class="complaint-meta">{{ complaint[7].strftime('%d %b %Y, %H:%M') if complaint[7] else 'N/A' }}</div>
+                <div class="complaint-preview">{{ complaint[3][:80] }}...</div>
+            </div>
+            <div class="complaint-right">
+                <span class="badge {% if complaint[5] == 'pending' %}badge-pending{% elif complaint[5] == 'in_progress' %}badge-inprogress{% elif complaint[5] == 'resolved' %}badge-resolved{% else %}badge-rejected{% endif %}">
+                    {{ complaint[5].replace('_', ' ').title() }}
+                </span>
+                <div style="font-size: 12px; color: var(--text2);">
+                    {% if complaint[4] %}{{ complaint[4].title() }}{% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card-body">
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+            </svg>
+            <div class="empty-state-title">No complaints yet</div>
+            <div class="empty-state-sub">Submit a new complaint to get started</div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Complaint Detail Modal -->
+<div class="modal-overlay" id="complaintModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title" id="modalTitle">Complaint Details</div>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Content loaded dynamically -->
+        </div>
+    </div>
+</div>
+
+<script>
+    function viewComplaint(id) {
+        const modal = document.getElementById('complaintModal');
+        const modalBody = document.getElementById('modalBody');
+        
+        fetch(`/complaint/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                const complaint = data.complaint;
+                const replies = data.replies;
+                
+                modalBody.innerHTML = `
+                    <div class="detail-row">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">
+                            <span class="badge badge-${complaint.status.replace('_', '')}">
+                                ${complaint.status.replace('_', ' ').toUpperCase()}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Category</div>
+                        <div class="detail-value">${complaint.category.toUpperCase()}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Filed</div>
+                        <div class="detail-value">${new Date(complaint.created_at).toLocaleDateString()}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Assigned To</div>
+                        <div class="detail-value">${complaint.assigned_to || 'Pending'}</div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <div style="font-size: 13px; font-weight: 600; margin-bottom: 8px;">Description</div>
+                        <div class="desc-box">${complaint.description}</div>
+                    </div>
+                    
+                    ${replies.length > 0 ? `
+                        <div class="reply-section">
+                            <div class="reply-label">Updates</div>
+                            ${replies.map(r => `
+                                <div class="reply-entry">
+                                    <div class="reply-from">${r.user}</div>
+                                    <div>${r.reply}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                `;
+                
+                modal.classList.add('open');
+            });
+    }
+    
+    function closeModal() {
+        document.getElementById('complaintModal').classList.remove('open');
+    }
+    
+    document.getElementById('complaintModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+</script>
+
+{% endblock %}

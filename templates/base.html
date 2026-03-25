@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Complaint Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app active">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="sidebar-logo-name">SCMS</div>
+                        <div class="sidebar-logo-sub">Complaints</div>
+                    </div>
+                </div>
+
+                <div class="user-pill">
+                    <div class="user-avatar">{{ name[0].upper() }}</div>
+                    <div class="user-info">
+                        <div class="user-name">{{ name }}</div>
+                        <div class="user-role">{{ session.get('role', 'user') | capitalize }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                {% if session.get('role') == 'student' %}
+                    <div class="nav-section-label">Main</div>
+                    <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9h18V5H3v4zm0 4v6a2 2 0 002 2h14a2 2 0 002-2v-6H3z"></path>
+                        </svg>
+                        <span>My Complaints</span>
+                    </a>
+
+                {% elif session.get('role') == 'admin' %}
+                    <div class="nav-section-label">Main</div>
+                    <a href="/admin" class="nav-item {% if request.path == '/admin' %}active{% endif %}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"></path>
+                        </svg>
+                        <span>All Complaints</span>
+                    </a>
+
+                {% elif session.get('role') == 'department' %}
+                    <div class="nav-section-label">Main</div>
+                    <a href="/department" class="nav-item {% if request.path == '/department' %}active{% endif %}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 6h16v12H4V6zm0-2h16v2H4V4z"></path>
+                        </svg>
+                        <span>Assigned Complaints</span>
+                    </a>
+                {% endif %}
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="/logout" class="logout-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main">
+            <div class="topbar">
+                <div>
+                    <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
+                    <div class="topbar-sub">{% block page_subtitle %}Manage your complaints{% endblock %}</div>
+                </div>
+            </div>
+
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'toastOut 0.2s ease forwards';
+                setTimeout(() => toast.remove(), 200);
+            }, 3000);
+        }
+
+        // Logout confirmation
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to logout?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

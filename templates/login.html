@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Student Complaint Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <!-- Logo -->
+            <div class="auth-logo">
+                <div class="auth-logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="auth-logo-text">SCMS</div>
+                    <div class="auth-logo-sub">Student Complaints</div>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in to your account to continue</p>
+
+            <!-- Error Message -->
+            {% if error %}
+            <div style="background: var(--red-light); color: var(--red); padding: 10px 12px; border-radius: var(--radius); font-size: 13px; margin-bottom: 1rem;">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <!-- Login Form -->
+            <form method="POST" action="/login">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+
+            <!-- Demo Hint -->
+            <div class="demo-hint">
+                <strong>Demo Accounts:</strong><br>
+                Student: student@example.com | 123456<br>
+                Admin: admin@example.com | 123456<br>
+                Dept: department@example.com | 123456
+            </div>
+
+            <!-- Sign Up Link -->
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 13px; color: var(--text2);">
+                Don't have an account? <a href="/register_page" style="color: var(--accent); text-decoration: none; font-weight: 500;">Sign up</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Student Complaint Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <!-- Logo -->
+            <div class="auth-logo">
+                <div class="auth-logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="auth-logo-text">SCMS</div>
+                    <div class="auth-logo-sub">Student Complaints</div>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <h1 class="auth-title">Create Account</h1>
+            <p class="auth-subtitle">Join SCMS to file complaints</p>
+
+            <!-- Error Message -->
+            {% if error %}
+            <div style="background: var(--red-light); color: var(--red); padding: 10px 12px; border-radius: var(--radius); font-size: 13px; margin-bottom: 1rem;">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <!-- Role Selection -->
+            <div class="role-tabs">
+                <button type="button" class="role-tab active" data-role="student">Student</button>
+                <button type="button" class="role-tab" data-role="department">Department</button>
+            </div>
+
+            <!-- Register Form -->
+            <form method="POST" action="/register" id="registerForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="At least 6 characters" required>
+                </div>
+
+                <input type="hidden" name="role" id="roleInput" value="student">
+
+            <div class="form-group department-group" style="display:none;">
+                <label for="department">Department</label>
+                <select id="department" name="department">
+                    <option value="">Select Department</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept }}">{{ dept }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+
+            <!-- Sign In Link -->
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 13px; color: var(--text2);">
+                Already have an account? <a href="/" style="color: var(--accent); text-decoration: none; font-weight: 500;">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const roleTabs = document.querySelectorAll('.role-tab');
+        const roleInput = document.getElementById('roleInput');
+
+        const departmentGroup = document.querySelector('.department-group');
+
+        roleTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                roleTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                roleInput.value = this.dataset.role;
+
+                if (this.dataset.role === 'department') {
+                    departmentGroup.style.display = 'block';
+                    document.getElementById('department').setAttribute('required', 'required');
+                } else {
+                    departmentGroup.style.display = 'none';
+                    document.getElementById('department').removeAttribute('required');
+                    document.getElementById('department').value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
