@@ -87,7 +87,7 @@ USE complaint_system;
 ```
 
 Then run the schema:
-```bash
+```bash~
 mysql -u root -p complaint_system < database/schema.sql
 ```
 
@@ -256,5 +256,4 @@ MIT License - See LICENSE file for details.
 
 ---
 
-Built with ❤️ using Flask and MySQL
 
