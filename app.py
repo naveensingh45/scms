@@ -438,14 +438,19 @@ def update_schema():
     except Exception as e:
         return f"Error updating schema: {str(e)}"
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
 @app.errorhandler(500)
 def internal_server_error(e):
     app.logger.exception('Internal server error')
-    return render_template('login.html', error='Internal server error. Try again later.'), 500
+    return redirect("/")
 
 @app.errorhandler(404)
 def not_found_error(e):
-    return render_template('login.html', error='Page not found.'), 404
+    return redirect("/")
 
 if __name__ == "__main__":
     app.run(debug=True)

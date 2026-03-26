@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Student Complaint Management System{% endblock %}</title>
+    <!-- Anti-flash: apply theme before render -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -21,6 +27,7 @@
                         <div class="sidebar-logo-name">SCMS</div>
                         <div class="sidebar-logo-sub">Complaints</div>
                     </div>
+
                 </div>
 
                 <div class="user-pill">
@@ -63,12 +70,12 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="/logout" class="logout-btn">
+                <button class="logout-btn" id="logoutBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
                     <span>Logout</span>
-                </a>
+                </button>
             </div>
         </div>
 
@@ -79,10 +86,32 @@
                     <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
                     <div class="topbar-sub">{% block page_subtitle %}Manage your complaints{% endblock %}</div>
                 </div>
+                <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </button>
             </div>
 
             <div class="content">
                 {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirm Modal -->
+    <div class="confirm-overlay" id="logoutConfirm">
+        <div class="confirm-modal">
+            <div class="confirm-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+            </div>
+            <div class="confirm-title">Log out of SCMS?</div>
+            <div class="confirm-sub">You'll need to sign in again to access your complaints.</div>
+            <div class="confirm-actions">
+                <button class="btn btn-sm" id="cancelLogout">Cancel</button>
+                <a href="/logout" class="btn btn-danger">Log out</a>
             </div>
         </div>
     </div>
@@ -96,21 +125,45 @@
             toast.className = 'toast';
             toast.textContent = message;
             container.appendChild(toast);
-            
             setTimeout(() => {
                 toast.style.animation = 'toastOut 0.2s ease forwards';
                 setTimeout(() => toast.remove(), 200);
             }, 3000);
         }
 
-        // Logout confirmation
-        document.querySelectorAll('.logout-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                if (!confirm('Are you sure you want to logout?')) {
-                    e.preventDefault();
-                }
-            });
+        // Dark mode
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const sunIcon = `<path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42M12 5a7 7 0 100 14A7 7 0 0012 5z"/>`;
+        const moonIcon = `<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>`;
+
+        function applyTheme(dark) {
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+            if (themeIcon) themeIcon.innerHTML = dark ? sunIcon : moonIcon;
+        }
+        applyTheme(localStorage.getItem('theme') === 'dark');
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            applyTheme(!isDark);
         });
+
+        // Logout confirm modal
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutConfirm = document.getElementById('logoutConfirm');
+        const cancelLogout = document.getElementById('cancelLogout');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => logoutConfirm.classList.add('open'));
+        }
+        if (cancelLogout) {
+            cancelLogout.addEventListener('click', () => logoutConfirm.classList.remove('open'));
+        }
+        if (logoutConfirm) {
+            logoutConfirm.addEventListener('click', (e) => {
+                if (e.target === logoutConfirm) logoutConfirm.classList.remove('open');
+            });
+        }
     </script>
 </body>
 </html>

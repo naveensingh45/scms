@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Student Complaint Management System</title>
+    <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <button class="auth-theme-toggle" id="themeToggle" title="Toggle dark mode">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+    </button>
     <div class="auth-wrap">
         <div class="auth-card">
             <!-- Logo -->
@@ -48,12 +54,10 @@
                 <button type="submit" class="btn btn-primary">Sign In</button>
             </form>
 
-            <!-- Demo Hint -->
             <div class="demo-hint">
-                <strong>Demo Accounts:</strong><br>
-                Student: student@example.com | 123456<br>
-                Admin: admin@example.com | 123456<br>
-                Dept: department@example.com | 123456
+                <strong>Admin Login:</strong><br>
+                Email: admin@example.com<br>
+                Password: admin123
             </div>
 
             <!-- Sign Up Link -->
@@ -62,5 +66,25 @@
             </div>
         </div>
     </div>
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const sunIcon = `<path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42M12 5a7 7 0 100 14A7 7 0 0012 5z"/>`;
+        const moonIcon = `<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>`;
+
+        function applyTheme(dark) {
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+            themeIcon.innerHTML = dark ? sunIcon : moonIcon;
+        }
+
+        const savedTheme = localStorage.getItem('theme') === 'dark';
+        applyTheme(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            applyTheme(!isDark);
+        });
+    </script>
 </body>
 </html>

@@ -7,7 +7,7 @@
 
 <!-- Stats Grid -->
 <div class="stats-grid">
-    <div class="stat-card">
+    <div class="stat-card accent-blue">
         <div class="stat-dot dot-blue">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2zm2 2h14v12H5V7z"/>
@@ -17,7 +17,7 @@
         <div class="stat-value">{{ stats.total }}</div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card accent-amber">
         <div class="stat-dot dot-amber">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
@@ -27,7 +27,7 @@
         <div class="stat-value">{{ stats.pending }}</div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card accent-blue">
         <div class="stat-dot dot-blue">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -37,7 +37,7 @@
         <div class="stat-value">{{ stats.inprogress }}</div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card accent-green">
         <div class="stat-dot dot-green">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -90,7 +90,7 @@
     {% if complaints %}
     <div class="complaint-list">
         {% for complaint in complaints %}
-        <div class="complaint-item" onclick="viewComplaint({{ complaint[0] }})">
+        <div class="complaint-item" onclick="viewComplaint('{{ complaint[0] }}')">
             <div class="complaint-icon {% if complaint[4] == 'academic' %}icon-academic{% elif complaint[4] == 'hostel' %}icon-hostel{% elif complaint[4] == 'admin' %}icon-admin{% elif complaint[4] == 'infrastructure' %}icon-infra{% else %}icon-other{% endif %}">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2z"/>
@@ -149,7 +149,35 @@
                 const complaint = data.complaint;
                 const replies = data.replies;
                 
+                const stepperStates = (status) => {
+                    const steps = ['pending','in_progress','resolved'];
+                    const idx = steps.indexOf(status);
+                    return steps.map((s, i) => ({
+                        label: s === 'in_progress' ? 'In Progress' : s.charAt(0).toUpperCase() + s.slice(1),
+                        cls: i < idx ? 'done' : i === idx ? 'active' : 'todo',
+                        icon: i < idx ? '✓' : i + 1
+                    }));
+                };
+                const steps = stepperStates(complaint.status);
+                const stepperHTML = `
+                    <div class="status-stepper">
+                        ${steps.map((s, i) => `
+                            <div class="stepper-step">
+                                <div class="stepper-circle ${s.cls}">${s.icon}</div>
+                                <div class="stepper-label ${s.cls}">${s.label}</div>
+                            </div>
+                            ${i < steps.length - 1 ? `<div class="stepper-line ${s.cls === 'done' ? 'done' : 'todo'}"></div>` : ''}
+                        `).join('')}
+                    </div>`;
+
                 modalBody.innerHTML = `
+                    ${complaint.status !== 'rejected' ? stepperHTML : `
+                    <div class="detail-row">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">
+                            <span class="badge badge-rejected">REJECTED</span>
+                        </div>
+                    </div>`}
                     <div class="detail-row">
                         <div class="detail-label">Status</div>
                         <div class="detail-value">
