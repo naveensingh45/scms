@@ -1,80 +1,82 @@
 # Student Complaint Management System (SCMS)
 
-A beautiful, modern fullstack web application for managing student complaints with role-based dashboards for students, departments, and administrators.
+A modern full-stack web application for managing student complaints with role-based dashboards for **Students, Departments, and Admins**.
 
-## Features
+---
 
-✨ **Modern UI/UX**
-- Beautiful, responsive design with color-coded complaint categories
-- Smooth animations and transitions
-- Mobile-friendly interface
-- Dark mode support across all pages
-- Accent-colored stat cards for quick visual scanning
-- Status stepper in complaint detail view (Submitted → In Progress → Resolved)
-- Styled logout confirmation modal
+## 🚀 Features
 
-👥 **Role-Based Access**
-- **Students**: File complaints, track status, view replies
-- **Departments**: Manage assigned complaints, post updates
-- **Admins**: Oversee all complaints, assign to departments, approve resolutions
+### 🎨 UI/UX
 
-📊 **Dashboard Features**
-- Real-time statistics and complaint counts
-- Category-based organization (Academic, Hostel, Administrative, Infrastructure)
-- Status tracking (Pending, In Progress, Resolved, Rejected)
-- Color-coded badges for quick status identification
+* Responsive design with dark mode support
+* Color-coded complaint categories and status badges
+* Smooth animations and clean dashboards
+* Complaint status stepper (Pending → In Progress → Resolved)
+* Styled logout confirmation modal
 
-🔒 **Security**
-- Password hashing with Werkzeug
-- Session-based authentication
-- Role-based route protection
+### 👥 Role-Based Access
 
-## Tech Stack
+* **Students**: Submit complaints, track status, view replies
+* **Departments**: Manage assigned complaints, post updates
+* **Admins**: Assign complaints, monitor system, approve resolutions
 
-- **Backend**: Python Flask
-- **Database**: MySQL
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Design**: Custom CSS with beautiful color scheme
+### 📊 Dashboard
 
-## Project Structure
+* Real-time complaint statistics
+* Category-based organization
+* Status filtering (Pending, In Progress, Resolved, Rejected)
+* Visual stat cards for quick insights
+
+### 🔐 Security
+
+* Password hashing using Werkzeug
+* Session-based authentication
+* Role-based route protection
+
+---
+
+## 🛠 Tech Stack
+
+* **Backend**: Python Flask
+* **Database**: MySQL
+* **Frontend**: HTML5, CSS3, JavaScript
+
+---
+
+## 📁 Project Structure
 
 ```
 scms/
-├── app.py                    # Flask application & routes
-├── config.py                 # Database configuration
-├── requirements.txt          # Python dependencies
+├── app.py
+├── config.py
+├── requirements.txt
 ├── database/
-│   └── schema.sql           # Database schema
+│   └── schema.sql
 ├── static/
 │   └── css/
-│       └── style.css        # Application styling
+│       └── style.css
 ├── templates/
-│   ├── base.html            # Base template with sidebar
-│   ├── login.html           # Login page
-│   ├── register.html        # Register page
-│   ├── student_dashboard.html      # Student dashboard
-│   ├── admin_dashboard.html        # Admin dashboard
-│   └── department_dashboard.html   # Department dashboard
+│   ├── base.html
+│   ├── login.html
+│   ├── register.html
+│   ├── student_dashboard.html
+│   ├── admin_dashboard.html
+│   └── department_dashboard.html
 └── README.md
 ```
 
-## Setup Instructions
+---
 
-### Prerequisites
-- Python 3.7+
-- MySQL Server
-- pip (Python package manager)
+## ⚙️ Setup Instructions
 
-### 1. Clone & Install Dependencies
+### 1. Install Dependencies
 
 ```bash
-cd scms
 pip install -r requirements.txt
 ```
 
-### 2. Configure Database
+### 2. Configure Database (`config.py`)
 
-Update `config.py` with your MySQL credentials:
 ```python
 MYSQL_HOST = 'localhost'
 MYSQL_USER = 'root'
@@ -84,108 +86,47 @@ MYSQL_DB = 'complaint_system'
 
 ### 3. Create Database & Tables
 
-Create the database in MySQL:
 ```sql
 CREATE DATABASE complaint_system;
 USE complaint_system;
 ```
 
-Then run the schema:
 ```bash
 mysql -u root -p complaint_system < database/schema.sql
 ```
 
-### 4. Add Demo Data (Optional)
-
-Insert demo users for testing:
-```sql
-INSERT INTO users (name, email, password, role) VALUES
-('John Student', 'student@example.com', 'pbkdf2:sha256:...', 'student'),
-('Admin User', 'admin@example.com', 'pbkdf2:sha256:...', 'admin'),
-('Dept Manager', 'department@example.com', 'pbkdf2:sha256:...', 'department');
-```
-
-Use password hash from Python:
-```python
-from werkzeug.security import generate_password_hash
-print(generate_password_hash('yourpassword'))
-```
-
-### 5. Run Application
+### 4. Run Application
 
 ```bash
 python app.py
 ```
 
-Access at: `http://localhost:5000`
+Access the app at:
+👉 http://localhost:5000
 
-## Demo Accounts
+---
 
-| Role | Email | Password |
-|------|-------|----------|
-| Student | student@example.com | 123456 |
-| Admin | admin@example.com | admin123 |
-| Department | department@example.com | 123456 |
+## 👤 Demo Accounts
 
-## File Format Guide
+| Role       | Email                                                   | Password |
+| ---------- | ------------------------------------------------------- | -------- |
+| Student    | [student@example.com](mailto:student@example.com)       | 123456   |
+| Admin      | [admin@example.com](mailto:admin@example.com)           | 123456   |
+| Department | [department@example.com](mailto:department@example.com) | 123456   |
 
-### Static Files
-- All CSS is in `static/css/style.css`
-- Add custom stylesheets in the same directory
-- Images should be placed in `static/images/`
+---
 
-### Templates
-- Use Jinja2 templating syntax
-- All dynamic templates extend `base.html`
-- Authentication pages (login, register) are standalone
+## 📌 Core Features
 
-## Database Schema
+### Complaint Categories
 
-### Users Table
-- id, name, email, password, role (student/department/admin), created_at
+* Academic
+* Hostel
+* Administrative
+* Infrastructure
+* Other
 
-### Complaints Table
-- id, user_id, title, description, category, status, assigned_to, created_at, updated_at
-
-### Replies Table
-- id, complaint_id, user_id, reply_text, created_at
-
-### Departments Table
-- id, name, created_at
-
-## API Routes
-
-### Authentication
-- `GET /` - Home/Login page
-- `GET /register_page` - Registration page
-- `POST /register` - Register new user
-- `POST /login` - User login
-- `GET /logout` - Logout user
-
-### Student Routes
-- `GET /dashboard` - View my complaints
-- `POST /add` - Submit new complaint
-- `GET /complaint/<id>` - View complaint details (JSON)
-
-### Admin Routes
-- `GET /admin` - View all complaints
-- `POST /assign/<id>` - Assign complaint to department
-- `GET /update/<id>/<status>` - Update complaint status
-
-### Department Routes
-- `GET /department` - View assigned complaints
-- `GET /update/<id>/<status>` - Update complaint status
-- `POST /reply/<id>` - Add reply to complaint
-
-## Complaint Categories
-
-1. **Academic** - Academic-related issues
-2. **Hostel** - Hostel facility issues
-3. **Administrative** - Administrative matters
-4. **Infrastructure** - Infrastructure and maintenance
-5. **Other** - Miscellaneous issues
-
-## Status Flow
+### Status Flow
 
 ```
 Pending → In Progress → Resolved
@@ -193,358 +134,96 @@ Pending → In Progress → Resolved
                   Rejected
 ```
 
-## Color Scheme
+---
+
+## 🎨 Color Scheme
 
 ### Light Mode
-- **Primary (Accent)**: #2d5a8e (Blue)
-- **Success (Green)**: #2e7d52
-- **Warning (Amber)**: #b7691a
-- **Danger (Red)**: #c0392b
-- **Text**: #1a1916
-- **Background**: #f4f1eb
+
+* Primary: #2d5a8e
+* Success: #2e7d52
+* Warning: #b7691a
+* Danger: #c0392b
+* Background: #f4f1eb
 
 ### Dark Mode
-- **Primary (Accent)**: #4a8fd4
-- **Success (Green)**: #3fa06a
-- **Warning (Amber)**: #d4882a
-- **Danger (Red)**: #e05244
-- **Text**: #f0ede6
-- **Background**: #0f0f0f
 
-## Important Notes
+* Primary: #4a8fd4
+* Success: #3fa06a
+* Warning: #d4882a
+* Danger: #e05244
+* Background: #0f0f0f
 
-⚠️ **Development Only**
-- Debug mode is enabled in `app.py`
-- Change `debug=True` to `debug=False` for production
-- Update SECRET_KEY in config.py before deployment
+---
 
-🔐 **Security Recommendations**
-- Use environment variables for secrets
-- Implement HTTPS in production
-- Add CSRF protection
-- Implement rate limiting on login
+## ⚠️ Important Notes
 
-## Customization
+* Debug mode is enabled by default — disable in production
+* Change `SECRET_KEY` before deployment
+* Use environment variables for sensitive data
+
+---
+
+## 🔐 Security Recommendations
+
+* Enable HTTPS in production
+* Add CSRF protection
+* Implement rate limiting on login
+* Use secure session handling
+
+---
+
+## 🛠 Customization
 
 ### Add New Complaint Category
-Edit the enum in `database/schema.sql`:
+
+Edit `database/schema.sql`:
+
 ```sql
 category ENUM('academic', 'hostel', 'admin', 'infrastructure', 'other', 'new_category')
 ```
 
-### Modify Color Scheme
-Edit CSS variables in `static/css/style.css`:
-```css
-:root {
-  --accent: #your-color;
-  /* ... other variables ... */
-}
+### Modify Colors
+
+Edit CSS variables in:
+
+```
+static/css/style.css
 ```
 
-### Toggle Dark Mode
-The dark mode toggle button is available on all pages (top-right of topbar on dashboards, top-right corner on login page). Preference is saved in `localStorage` and persists across sessions.
+---
 
-## Troubleshooting
+## 🧪 Troubleshooting
 
 ### Database Connection Error
-- Check MySQL is running
-- Verify credentials in `config.py`
-- Ensure database exists
+
+* Ensure MySQL is running
+* Verify credentials in `config.py`
+* Check database exists
 
 ### Template Not Found
-- Check file naming in `templates/` folder
-- Verify template paths in routes
+
+* Verify files exist in `templates/`
+* Check route template names
 
 ### Styling Issues
-- Clear browser cache
-- Check `static/css/style.css` is linked correctly
-- Verify CSS file permissions
 
-### Password Hash Mismatch
-If login fails despite correct credentials, regenerate the password hash directly via Python and update the DB:
-```python
-import MySQLdb
-from werkzeug.security import generate_password_hash
-h = generate_password_hash('yourpassword')
-db = MySQLdb.connect(host='localhost', user='root', passwd='', db='complaint_system')
-c = db.cursor()
-c.execute("UPDATE users SET password=%s WHERE email=%s", (h, 'admin@example.com'))
-db.commit()
-db.close()
-```
+* Clear browser cache
+* Ensure CSS file path is correct
 
-## Contributors
+---
 
-| Name | Role |
-|------|------|
-| Naveen Singh | Project Lead & Backend |
-| Bhawesh Gunjiyal | UI/UX Enhancements — Dark mode, stat card accents, status stepper, logout , bug fixes |
+## 👨‍💻 Contributors
 
-## Support & Contribution
+* Naveen Singh — Backend
+* Bhawesh Gunjiyal — UI/UX, Dark Mode, Enhancements
 
-For issues or suggestions, please create an issue in the repository.
+---
 
-## License
+## 📄 License
 
-MIT License - See LICENSE file for details.
+MIT License
 
 ---
 
 Built with ❤️ using Flask and MySQL
-
-
-A beautiful, modern fullstack web application for managing student complaints with role-based dashboards for students, departments, and administrators.
-
-## Features
-
-✨ **Modern UI/UX**
-- Beautiful, responsive design with color-coded complaint categories
-- Smooth animations and transitions
-- Mobile-friendly interface
-
-👥 **Role-Based Access**
-- **Students**: File complaints, track status, view replies
-- **Departments**: Manage assigned complaints, post updates
-- **Admins**: Oversee all complaints, assign to departments, approve resolutions
-
-📊 **Dashboard Features**
-- Real-time statistics and complaint counts
-- Category-based organization (Academic, Hostel, Administrative, Infrastructure)
-- Status tracking (Pending, In Progress, Resolved, Rejected)
-- Color-coded badges for quick status identification
-
-🔒 **Security**
-- Password hashing with Werkzeug
-- Session-based authentication
-- Role-based route protection
-
-## Tech Stack
-
-- **Backend**: Python Flask
-- **Database**: MySQL
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Design**: Custom CSS with beautiful color scheme
-
-## Project Structure
-
-```
-scms/
-├── app.py                    # Flask application & routes
-├── config.py                 # Database configuration
-├── requirements.txt          # Python dependencies
-├── database/
-│   └── schema.sql           # Database schema
-├── static/
-│   └── css/
-│       └── style.css        # Application styling
-├── templates/
-│   ├── base.html            # Base template with sidebar
-│   ├── login.html           # Login page
-│   ├── register.html        # Register page
-│   ├── student_dashboard.html      # Student dashboard
-│   ├── admin_dashboard.html        # Admin dashboard
-│   └── department_dashboard.html   # Department dashboard
-└── README.md
-```
-
-## Setup Instructions
-
-### Prerequisites
-- Python 3.7+
-- MySQL Server
-- pip (Python package manager)
-
-### 1. Clone & Install Dependencies
-
-```bash
-cd scms
-pip install -r requirements.txt
-```
-
-### 2. Configure Database
-
-Update `config.py` with your MySQL credentials:
-```python
-MYSQL_HOST = 'localhost'
-MYSQL_USER = 'root'
-MYSQL_PASSWORD = 'your_password'
-MYSQL_DB = 'complaint_system'
-```
-
-### 3. Create Database & Tables
-
-Create the database in MySQL:
-```sql
-CREATE DATABASE complaint_system;
-USE complaint_system;
-```
-
-Then run the schema:
-```bash
-mysql -u root -p complaint_system < database/schema.sql
-```
-
-### 4. Add Demo Data (Optional)
-
-Insert demo users for testing:
-```sql
-INSERT INTO users (name, email, password, role) VALUES
-('John Student', 'student@example.com', 'pbkdf2:sha256:...', 'student'),
-('Admin User', 'admin@example.com', 'pbkdf2:sha256:...', 'admin'),
-('Dept Manager', 'department@example.com', 'pbkdf2:sha256:...', 'department');
-```
-
-Use password hash from Python:
-```python
-from werkzeug.security import generate_password_hash
-print(generate_password_hash('123456'))
-```
-
-### 5. Run Application
-
-```bash
-python app.py
-```
-
-Access at: `http://localhost:5000`
-
-## Demo Accounts
-
-For testing, create accounts with these credentials (in the application):
-
-| Role | Email | Password |
-|------|-------|----------|
-| Student | student@example.com | 123456 |
-| Admin | admin@example.com | 123456 |
-| Department | department@example.com | 123456 |
-
-## File Format Guide
-
-### Static Files
-- All CSS is in `static/css/style.css`
-- Add custom stylesheets in the same directory
-- Images should be placed in `static/images/`
-
-### Templates
-- Use Jinja2 templating syntax
-- All dynamic templates extend `base.html`
-- Authentication pages (login, register) are standalone
-
-## Database Schema
-
-### Users Table
-- id, name, email, password, role (student/department/admin), created_at
-
-### Complaints Table
-- id, user_id, title, description, category, status, assigned_to, created_at, updated_at
-
-### Replies Table
-- id, complaint_id, user_id, reply_text, created_at
-
-### Departments Table
-- id, name, created_at
-
-## API Routes
-
-### Authentication
-- `GET /` - Home/Login page
-- `GET /register_page` - Registration page
-- `POST /register` - Register new user
-- `POST /login` - User login
-- `GET /logout` - Logout user
-
-### Student Routes
-- `GET /dashboard` - View my complaints
-- `POST /add` - Submit new complaint
-- `GET /complaint/<id>` - View complaint details (JSON)
-
-### Admin Routes
-- `GET /admin` - View all complaints
-- `POST /assign/<id>` - Assign complaint to department
-- `GET /update/<id>/<status>` - Update complaint status
-
-### Department Routes
-- `GET /department` - View assigned complaints
-- `GET /update/<id>/<status>` - Update complaint status
-- `POST /reply/<id>` - Add reply to complaint
-
-## Complaint Categories
-
-1. **Academic** - Academic-related issues
-2. **Hostel** - Hostel facility issues
-3. **Administrative** - Administrative matters
-4. **Infrastructure** - Infrastructure and maintenance
-5. **Other** - Miscellaneous issues
-
-## Status Flow
-
-```
-Pending → In Progress → Resolved
-                    ↓
-                  Rejected
-```
-
-## Color Scheme
-
-- **Primary (Accent)**: #2d5a8e (Blue)
-- **Success (Green)**: #2e7d52
-- **Warning (Amber)**: #b7691a
-- **Danger (Red)**: #c0392b
-- **Text**: #1a1916
-- **Background**: #f4f1eb
-
-## Important Notes
-
-⚠️ **Development Only**
-- Debug mode is enabled in `app.py`
-- Change `debug=True` to `debug=False` for production
-- Update SECRET_KEY in config.py before deployment
-
-🔐 **Security Recommendations**
-- Use environment variables for secrets
-- Implement HTTPS in production
-- Add CSRF protection
-- Implement rate limiting on login
-
-## Customization
-
-### Add New Complaint Category
-Edit the enum in `database/schema.sql`:
-```sql
-category ENUM('academic', 'hostel', 'admin', 'infrastructure', 'other', 'new_category')
-```
-
-### Modify Color Scheme
-Edit CSS variables in `static/css/style.css`:
-```css
-:root {
-  --accent: #your-color;
-  /* ... other variables ... */
-}
-```
-
-## Troubleshooting
-
-### Database Connection Error
-- Check MySQL is running
-- Verify credentials in `config.py`
-- Ensure database exists
-
-### Template Not Found
-- Check file naming in `templates/` folder
-- Verify template paths in routes
-
-### Styling Issues
-- Clear browser cache
-- Check `static/css/style.css` is linked correctly
-- Verify CSS file permissions
-
-## Support & Contribution
-
-For issues or suggestions, please create an issue in the repository.
-
-## License
-
-MIT License - See LICENSE file for details.
-
----
